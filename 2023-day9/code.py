@@ -14,7 +14,7 @@ def readFile(filePath): # Reads the input puzzle file and returns 2D array of th
     return lines
 
 
-def historyCalc(inputArray):
+def forwardHistory(inputArray):
 
     # Base case
     is_all_zero = all(element == 0 for element in inputArray)
@@ -26,18 +26,38 @@ def historyCalc(inputArray):
         diffs = []
         for i in range(0, len(inputArray) - 1):
             diffs.append(inputArray[i+1] - inputArray[i])
-        return inputArray[-1] + historyCalc(diffs)
+        return inputArray[-1] + forwardHistory(diffs)
+
+
+def backwardHistory(inputArray):
+
+    # Base case
+    is_all_zero = all(element == 0 for element in inputArray)
+    if is_all_zero:
+        return 0
+
+    # Recursive Case
+    else:
+        diffs = []
+        for i in range(0, len(inputArray) - 1):
+            diffs.append(inputArray[i+1] - inputArray[i])
+        return inputArray[0] - backwardHistory(diffs)
+
 
 
 if __name__ == "__main__":
-    example = [1, 3, 6, 10, 15, 21]
-    print(historyCalc(example))
+    example = [10, 13, 16, 21, 30, 45]
+    print(backwardHistory(example))
 
     allLines = readFile('puzzleInput.txt')
-    total = 0
+    forwardTotal = 0
+    backwardTotal = 0
     for line in allLines:
-        total += historyCalc(line)
+        forwardTotal += forwardHistory(line)
+        backwardTotal += backwardHistory(line)
         
-    print(total)
+    print(f'Forward Total: {forwardTotal}')
+    print(f'Backward Total: {backwardTotal}')
+
 
     
